@@ -1,18 +1,5 @@
-## Getting Started
+## PART 1.3 Java client and server
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+In the Client and Server folders, there is a simple implementation with sockets. The server will listen in the local port 5555 for an input from the client. The client will send two numbers that the server will add up and show in the console.
 
-## Folder Structure
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## PART 1.4 Server/Client File Transfer

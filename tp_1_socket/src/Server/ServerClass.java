@@ -30,7 +30,6 @@ public class ServerClass {
             writer.write("\r\n=== Result is : \n" + result + "\n");
             writer.flush();
             connectionSocket.close();
-            mysocket.close();
         }
     }
 }

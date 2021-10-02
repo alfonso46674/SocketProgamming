@@ -2,7 +2,6 @@ package Client;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 /**
  *
@@ -22,6 +21,7 @@ public class ClientClass {
             while ((serverMsg = reader.readLine()) != null) {
                 System.out.println("Client:" + serverMsg);
             }
+            socketClient.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

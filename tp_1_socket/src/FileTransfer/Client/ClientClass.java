@@ -10,7 +10,7 @@ public class ClientClass {
         System.out.println("Client: Connection Established");
 
         
-        String fileName = "C:\\Llaves\\test.txt";
+        String fileName = "./test.txt";
         
         try(InputStream input = new FileInputStream(fileName)){
             //outputStream used to send data to the serverSocket

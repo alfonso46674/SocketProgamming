@@ -3,7 +3,7 @@ package FileTransfer.Client;
 import java.io.*;
 import java.net.*;
 
-public class ClientClass {
+public class FTPClientClass {
 	public static void main(String argv[]) throws IOException,FileNotFoundException {
         //create the socket
         Socket socketClient = new Socket("localhost",8888);

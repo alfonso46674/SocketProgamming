@@ -3,7 +3,7 @@ package FileTransfer.Server;
 import java.io.*;
 import java.net.*;
 
-public class ServerClass {
+public class FTPServerClass {
 	public static void main(String[] args) throws IOException {
 		System.out.println("Server is running");
         //create serverSocket and accept incoming connections

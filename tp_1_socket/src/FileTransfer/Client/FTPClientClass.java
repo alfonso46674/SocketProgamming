@@ -4,39 +4,41 @@ import java.io.*;
 import java.net.*;
 
 public class FTPClientClass {
-	public static void main(String argv[]) throws IOException,FileNotFoundException {
-        //create the socket
-        Socket socketClient = new Socket("localhost",8888);
-        System.out.println("Client: Connection Established");
+    public static void main(String argv[]) {
 
-        
-        String fileName = "./test.txt";
-        
-        try(InputStream input = new FileInputStream(fileName)){
-            //outputStream used to send data to the serverSocket
-            OutputStream output = socketClient.getOutputStream();
-            //variable used to know when the FileInputStream has no more bytes to read
-            int i = 0;
+        try {
 
-             do {
-                //array of bytes to read the data in chunks of 1024 bytes
-                byte[] data = new byte[1024];
-                //read and save the data, and return the total number of bytes read into the byte array
-                i = input.read(data);
-                //send the read data to the serverSocket (outputStream)
-                output.write(data);
-                // String value = new String(data,StandardCharsets.UTF_8);
-                // System.out.print(value);
+            // create the socket
+            Socket socketClient = new Socket("localhost", 8888);
+            System.out.println("Client: Connection Established");
 
-            //i only will be -1 when .read() has no more bytes to read from the FileInputStream
-             }while(i != -1);
+            // InputStream input = new FileInputStream(fileName)
+            String fileName = "./test.txt";
 
-             //close Streams and socket
-             output.close();
-             input.close();
-             socketClient.close();
+            // create the input as a bufferedReader that will hold a reference to the file
+            // to read as a FileInputStream
+            BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+
+            // BufferedWriter used to send data to the serverSocket
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())); // socketClient.getOutputStream();
+
+            // variable used to hold the data from the file
+            String data;
+
+            // read data from the file until there is no more to read
+            while ((data = input.readLine()) != null) {
+                // write the data to the output of the socket with \r\n so it has a line break
+                output.write(data + "\r\n");
+            }
+
+            // close Streams and socket
+            output.close();
+            input.close();
+            socketClient.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
 
-	}
+    }
 }

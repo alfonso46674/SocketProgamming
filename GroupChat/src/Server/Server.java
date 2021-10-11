@@ -1,75 +1,89 @@
 
 import java.io.*;
 import java.net.*;
+import java.util.HashSet;
+
+public class Server {
 
 
 
-public class Server implements Runnable{
-    private Socket clientSocket;
-    //constructor
-    public Server(Socket s){
-        this.clientSocket = s;
-    }
+    // set of all BufferedWriters for all the connected clients. Used to broadcast
+    // messages
+    private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
 
-    //run function for each thread
-    public void run(){
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            BufferedWriter writer;
-            writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            writer.write("*** Welcome to the Calculation Server (Addition Only) ***\r\n");
-            writer.write("*** Please type in the first number and press Enter : \n");
-            writer.flush();
-            String data1 = reader.readLine().trim();
-            writer.write("*** Please type in the second number and press Enter :\n");
-            writer.flush();
-            String data2 = reader.readLine().trim();
-            int num1 = Integer.parseInt(data1);
-            int num2 = Integer.parseInt(data2);
-            int result = num1 + num2;
-            System.out.println("Addition operation done ");
-            writer.write("\r\n=== Result is : \n" + result + "\n");
-            writer.flush();
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static void main(String argv[]){
+    public static void main(String argv[]) {
         System.out.println(" Server is Running ");
 
         ServerSocket server = null;
 
-        try{
-            //server listening on port 5555
+        try {
+            // server listening on port 5555
             server = new ServerSocket(5555);
 
-            while(true){
-                //socket object to receive incoming client requests
-                Socket client = server.accept();
-    
+            while (true) {
+                new Handler(server.accept()).start();
                 System.out.println("New client connected");
-                
-                //create the new thread along with the Server object
-                Thread serverThread = new Thread(new Server(client));
-                serverThread.start();
 
-    
+
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally{
-            if(server != null){
-                try{
+        } finally {
+            if (server != null) {
+                try {
+                    System.out.println("Server closing");
                     server.close();
-                }catch(IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
     }
+
+    // create a handler to spawn the clients as different threads. This handlers are
+    // responsible
+    // for dealing with a single client and broadcasting its messages
+    private static class Handler extends Thread {
+        private Socket socket;
+        private BufferedReader reader;
+        private PrintWriter writer;
+
+        // constructor the handler thread
+        public Handler(Socket socket) {
+            this.socket = socket;
+        }
+
+        public void run() {
+            try {
+                // create the reading and writing streams
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                writer = new PrintWriter(socket.getOutputStream(),true);
+
+                //add the writer to the PrintWriters set
+                writers.add(writer);
+
+                // accept messages from the client and broadcast them
+                String data;
+                while ((data = reader.readLine()) != null) {
+                    for(PrintWriter w : writers){
+                        w.println(data);
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(writer != null){
+                    writers.remove(writer);
+                }
+                try {
+                    socket.close();
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+
 }
+
